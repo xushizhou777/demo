@@ -1,5 +1,6 @@
 package com.hixtrip.sample.domain.inventory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,6 +32,7 @@ public class InventoryDomainService {
      */
     public Boolean changeInventory(String skuId, Long sellableQuantity, Long withholdingQuantity, Long occupiedQuantity) {
         //todo 需要你在infra实现，只需要实现缓存操作，防止超卖。按100并发设计。
+
         return null;
     }
 }

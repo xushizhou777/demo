@@ -2,6 +2,9 @@ package com.hixtrip.sample.entry;
 
 import com.hixtrip.sample.client.order.dto.CommandOderCreateDTO;
 import com.hixtrip.sample.client.order.dto.CommandPayDTO;
+import com.hixtrip.sample.domain.order.repository.OrderRepository;
+import com.hixtrip.sample.domain.pay.model.CommandPay;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OrderController {
 
+    @Autowired
+    OrderRepository orderRepository;
 
     /**
      * todo 这是你要实现的接口
@@ -23,6 +28,7 @@ public class OrderController {
     public String order(@RequestBody CommandOderCreateDTO commandOderCreateDTO) {
         //登录信息可以在这里模拟
         var userId = "";
+
         return "";
     }
 
@@ -35,7 +41,20 @@ public class OrderController {
      */
     @PostMapping(path = "/command/order/pay/callback")
     public String payCallback(@RequestBody CommandPayDTO commandPayDTO) {
-        return "";
+        if (commandPayDTO.getPayStatus().equals(1)) {
+            CommandPay commandPay = new CommandPay(commandPayDTO.getOrderId(), commandPayDTO.getPayStatus());
+            boolean b = orderRepository.orderPaySuccess(commandPay);
+            if (b) {
+                return "支付成功";
+            } else {
+                return "重复支付";
+            }
+        } else {
+            CommandPay commandPay = new CommandPay(commandPayDTO.getOrderId(), commandPayDTO.getPayStatus());
+            orderRepository.orderPayFail(commandPay);
+            return "支付失败";
+        }
+
     }
 
 }
